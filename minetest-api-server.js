@@ -4,21 +4,25 @@ const bodyParser = require('body-parser');
 const { minetestApiPort } = require('./config');
 const bot = require('./bot');
 
-server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({ extended: true }));
 
-server.post('', async (req, res) => {
+
+server.post('/', async (req, res) => {
+    req.body = JSON.parse(Object.keys(req.body)[0]);
+    console.log(req.body);
     if (req.body.type === 'DISCORD-RELAY-MESSAGE') {
-        console.log(req.body.type);
         await bot.channel.send(req.body.content);
         return res.json({ ok: true });
     }
 
     else if (req.body.type === 'DISCORD-REQUEST-DATA') {
-        return res.json(bot.fetchMessages());
+        const messages = bot.fetchMessages();
+        res.json({messages});
+        return;
     }
 
     res.json({ errorMessage: 'invalid type' });
-})
+});
 
 function runMinetestApiServer() {
     server.listen(minetestApiPort, () => {
