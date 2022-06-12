@@ -1,0 +1,7 @@
+const config = {
+    token: 'your bot token',
+    channelId: 'channelId',
+    minetestApiPort: 8080
+};
+
+module.exports = config;
